@@ -75,7 +75,30 @@ Layer 1 provides the fundamental components used by higher-level agent framework
 
 LangGraph is used to orchestrate **stateful, multi-step AI workflows** using nodes, edges, tools, and checkpoints.
 
----
+--- 
+## Architecture
+
+```text
+     START
+       ↓
+     Chatbot
+       ↓
+    Tool Call?
+ ┌───────────────┐
+ │               │
+Yes             No
+ ↓               ↓
+Tools        Translator
+ ↓               ↓
+Chatbot          END
+ ↓
+Tool Call?
+ ├── Yes → Tools
+ └── No  → END
+```
+
+The chatbot can repeatedly call tools until no further tool is required, after which the workflow terminates.
+
 
 ## State & Reducers
 
