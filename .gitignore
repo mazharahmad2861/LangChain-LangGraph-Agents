@@ -1,1 +1,8 @@
 .env
+
+
+.venv/
+venv/
+
+# Playwright MCP
+.playwright-mcp/

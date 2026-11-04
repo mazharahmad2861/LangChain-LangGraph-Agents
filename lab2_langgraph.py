@@ -1,6 +1,5 @@
-# ============================================================
-# DAY 2 - LANGGRAPH COMPLETE EXAMPLE
-# ===========================================================
+
+# LANGGRAPH
 
 import os
 import requests
@@ -602,6 +601,4 @@ def chat(
 # 22. LAUNCH GRADIO
 # ============================================================
 
-gr.ChatInterface(
-    chat
-).launch()
+gr.ChatInterface(chat).launch() 
