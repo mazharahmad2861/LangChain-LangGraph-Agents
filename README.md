@@ -276,5 +276,206 @@ Useful for inspecting:
 
 **LangGraph = State + Nodes + Edges + Tools + Checkpoints**
 
-It provides the orchestration layer required to build **stateful and controllable agent workflows**.
+It provides the orchestration layer required to build **stateful and controllable agent workflows**. 
+
+# Lab 3 LangChain Agents & Browser Automation with Playwright MCP
+
+## Overview
+
+Day 3 focuses on building AI agents using LangChain's `create_agent()` and extending their capabilities through middleware, memory, structured output, and external tools.
+
+The practical implementation involves building a **Web Research Agent** using Playwright MCP, enabling an LLM to interact with websites through browser automation.
+
+## 1. LangChain `create_agent()`
+
+High-level API for creating tool-calling agents.
+
+**Key components:**
+- Model – LLM responsible for reasoning and decision-making.
+- Tools – External functions available to the agent.
+- System Prompt – Defines the agent's role and behavior.
+- Middleware – Customizes and controls agent execution.
+- Checkpointer – Saves and restores agent state.
+- Response Format – Defines structured output.
+
+**Execution methods:**
+- `invoke()` – Synchronous execution.
+- `ainvoke()` – Asynchronous execution.
+
+`create_agent()` uses LangGraph internally for agent execution and state management.
+
+## 2. Memory & Checkpointing
+
+LangGraph checkpointing allows agents to preserve conversational state across interactions.
+
+| Concept | Purpose |
+|---|---|
+| Checkpointer | Saves and restores agent state. |
+| Thread ID | Identifies a conversation. |
+| InMemorySaver | Stores checkpoints in memory; useful for development. |
+| Persistent Checkpointer | Stores state in a database for long-term persistence. |
+
+**Important:** Reusing the same thread ID allows the agent to continue a previous conversation.
+
+## 3. Structured Output
+
+Structured output ensures that an agent returns data in a predefined format instead of unrestricted text.
+
+- Implemented using Pydantic models.
+- Defines fields, data types, and descriptions.
+- Supports output validation.
+- Useful for API responses, database storage, and downstream processing.
+
+## 4. Middleware
+
+Middleware allows developers to intercept and customize different stages of an agent's execution.
+
+It acts as an additional control layer around model calls and tool execution, enabling logging, security, privacy protection, human approval, and resource management.
+
+### Types of Middleware
+
+| Middleware | Purpose | Example Use Case |
+|---|---|---|
+| Custom Middleware | Implements custom logic around agent execution. | Logging, input validation, monitoring tool calls. |
+| Logging Middleware | Records tool names, arguments, results, and execution details. | Debugging and tracking agent behavior. |
+| PIIMiddleware | Detects sensitive information and applies protection strategies. | Masking credit card numbers, emails, and phone numbers. |
+| HumanInTheLoopMiddleware | Pauses selected tool operations until human approval is received. | Approving emails before sending or confirming file deletion. |
+| ToolCallLimitMiddleware | Restricts the number of tool executions. | Preventing excessive tool calls and infinite execution loops. |
+| SummarizationMiddleware | Summarizes older conversation messages when configured context thresholds are reached. | Managing long conversations and reducing token usage. |
+
+### Important Concepts
+
+**1. Custom Middleware (`@wrap_tool_call`)**
+- Wraps tool execution with custom logic.
+- Provides access to tool names and arguments.
+- Can log execution details, validate requests, and handle errors.
+- Calls the actual tool handler to continue execution.
+
+**2. PII Middleware**
+
+PII (Personally Identifiable Information) middleware detects sensitive information and applies configured protection strategies.
+
+Common strategies:
+- `mask` – Replaces sensitive characters with masking characters.
+- `redact` – Removes sensitive information.
+- `block` – Prevents processing when sensitive information is detected.
+
+Custom regex detectors can be configured for Indian-specific information such as Aadhaar, PAN, phone numbers, and bank account numbers.
+
+**3. Human-in-the-Loop (HITL)**
+
+Allows an agent to pause before executing selected tools and request human intervention.
+
+Possible decisions:
+- Approve – Execute the tool.
+- Reject – Cancel the tool execution.
+- Edit – Modify the proposed tool arguments before execution, where supported.
+
+Requires checkpointing to preserve the interrupted agent state and resume execution.
+
+**4. Tool Call Limits**
+
+Controls how many times an agent can execute tools, helping prevent unnecessary tool usage, excessive API calls, and uncontrolled execution loops.
+
+**5. Summarization Middleware**
+
+Automatically summarizes older conversation history based on configured token thresholds, helping manage context-window limitations and long-running conversations.
+
+### Why Middleware Matters
+
+- Adds security and privacy controls.
+- Provides visibility into agent execution.
+- Prevents uncontrolled tool usage.
+- Enables human approval for sensitive operations.
+- Makes agent behavior customizable and manageable.
+
+**Key takeaway:** Middleware provides a way to control, monitor, secure, and customize agent execution without rewriting the entire agent logic.
+
+## 5. Node.js & Playwright
+
+**Node.js:** JavaScript runtime required to execute the Playwright MCP server.
+
+Important commands:
+- `node` – Executes JavaScript.
+- `npm` – Manages Node.js packages.
+- `npx` – Executes packages without global installation.
+
+**Playwright:** Microsoft's browser automation framework.
+
+Capabilities:
+- Browser navigation.
+- Clicking buttons and links.
+- Typing into input fields.
+- Keyboard interactions.
+- Reading webpage content.
+- Taking screenshots.
+
+## 6. Model Context Protocol (MCP)
+
+MCP (Model Context Protocol) standardizes communication between AI applications and external tools.
+
+**Core components:**
+- MCP Host – Application providing the environment for MCP.
+- MCP Client – Connects to MCP servers.
+- MCP Server – Exposes tools and capabilities.
+- MCP Tools – Operations available to the AI application.
+
+**STDIO Transport:**
+- Communication through standard input and output.
+- Client launches the local MCP server.
+- Commonly used for local MCP integrations.
+
+## 7. Playwright MCP Integration
+
+Playwright MCP exposes browser automation capabilities as tools that an AI agent can use.
+
+**Important components:**
+- `MultiServerMCPClient` – Connects to MCP servers.
+- `get_tools()` – Retrieves available MCP tools.
+- `client.session()` – Establishes a managed MCP session.
+- `load_mcp_tools()` – Loads tools from an active session.
+
+**Important:** Maintain an active MCP session while the agent executes browser operations to preserve browser context.
+
+### Common Browser Tools
+
+| Tool | Function |
+|---|---|
+| `browser_navigate` | Opens a URL. |
+| `browser_click` | Clicks an element. |
+| `browser_type` | Types text. |
+| `browser_snapshot` | Retrieves the accessibility snapshot of a webpage. |
+| `browser_take_screenshot` | Captures a screenshot. |
+| `browser_press_key` | Performs keyboard actions. |
+| `browser_navigate_back` | Navigates to the previous page. |
+
+## 8. Web Research Agent
+
+**Project:** Build a Web Research Agent using LangChain `create_agent()` and Playwright MCP.
+
+**Capabilities:**
+- Visit websites and navigate pages.
+- Extract information from webpages.
+- Perform browser interactions.
+- Research topics using live website content.
+- Summarize and present collected information.
+
+**Important considerations:**
+- Website content is untrusted input.
+- Avoid blindly following instructions embedded in webpages.
+- Require authorization for sensitive browser actions.
+- Use LangSmith for tracing and debugging agent execution.
+
+## 9. Key Takeaways
+
+- `create_agent()` simplifies tool-calling agent development.
+- LangGraph handles underlying agent execution and state management.
+- Checkpointers enable conversation continuity.
+- Pydantic enables structured and validated responses.
+- Middleware adds security, monitoring, and execution controls.
+- Node.js runs the Playwright MCP server.
+- Playwright automates browser interactions.
+- MCP connects AI applications with external tools.
+- Playwright MCP makes browser tools available to LangChain agents.
+- LangSmith helps debug and monitor agent execution.
 
