@@ -479,3 +479,123 @@ Playwright MCP exposes browser automation capabilities as tools that an AI agent
 - Playwright MCP makes browser tools available to LangChain agents.
 - LangSmith helps debug and monitor agent execution.
 
+
+# Lab 4 Deep Agents 
+
+## Overview
+
+**Deep Agents** is a higher-level agent framework built on top of LangChain and LangGraph for developing agents capable of handling complex, multi-step tasks.
+
+Unlike basic tool-calling agents, Deep Agents provides a built-in agent harness that supports planning, task delegation, filesystem management, reusable skills, and context management.
+
+It is designed for tasks that require more than a single interaction, such as research, report generation, analysis, and content creation.
+
+## 1. Understanding the LangChain Ecosystem
+
+The ecosystem can be understood through four layers:
+
+- **LangChain Core:** Provides the fundamental building blocks, including models, messages, prompts, and tools.
+- **LangGraph:** Handles agent orchestration, state management, and workflow execution.
+- **LangChain `create_agent`:** Simplifies the creation of tool-calling agents.
+- **Deep Agents:** Provides a more comprehensive agent harness for managing complex tasks through planning, delegation, and additional built-in capabilities.
+
+## 2. Core Capabilities of Deep Agents
+
+| Capability | Purpose |
+|---|---|
+| Planning | Breaks complex tasks into smaller steps using a to-do list. |
+| Filesystem | Reads, writes, edits, and organizes files. |
+| Sub-agents | Delegates specialized tasks to other agents. |
+| Skills | Provides reusable instructions and domain-specific knowledge. |
+| Tools | Enables interaction with external systems and custom functionality. |
+| Middleware | Adds additional behavior and control to agent execution. |
+
+## 3. How Deep Agents Work
+
+A typical Deep Agent follows this process:
+
+1. **Understand the task:** Interprets the user's objective.
+2. **Plan:** Breaks the objective into manageable subtasks.
+3. **Execute:** Uses available tools and filesystem operations.
+4. **Delegate:** Assigns specialized tasks to sub-agents when required.
+5. **Combine results:** Integrates the outputs from different tasks.
+6. **Generate output:** Produces the final report, presentation, or other requested artifact.
+
+The agent can revisit its plan and use intermediate files to manage longer workflows.
+
+## 4. Important Concepts
+
+### Filesystem Backend
+
+The filesystem backend provides the agent with a workspace to store and manage information.
+
+It supports operations such as reading, writing, editing, and listing files. A sandbox can be used to restrict file operations to a designated directory.
+
+With `virtual_mode=True`, the configured directory is exposed as the agent's virtual root (`/`).
+
+### Skills
+
+Skills are reusable instruction packages that teach an agent how to perform a particular task.
+
+A skill typically contains a `SKILL.md` file with metadata and detailed instructions. Additional resources can also be included.
+
+**Progressive disclosure** allows the agent to load detailed instructions only when they are relevant, rather than loading every skill upfront.
+
+### Sub-agents
+
+Sub-agents are specialized agents created to handle specific parts of a larger task.
+
+A lead agent can delegate work to sub-agents using the task capability. Each sub-agent operates with its own execution context and returns results to the lead agent.
+
+This enables modular development and parallel execution of independent tasks.
+
+### Custom Tools
+
+Custom tools connect an agent's reasoning capabilities to actual Python functionality or external systems.
+
+A Python function can be exposed as a tool, allowing the agent to invoke operations such as generating PowerPoint presentations, processing data, or interacting with APIs.
+
+The agent decides when to use the tool, while the underlying function performs the actual operation.
+
+### Middleware
+
+Middleware provides additional control over agent execution and can introduce behavior such as summarization, human approval, and other execution-level controls.
+
+### LangSmith Tracing
+
+LangSmith helps inspect agent execution and understand how an agent interacts with tools, middleware, and sub-agents.
+
+It is particularly useful for debugging complex workflows and understanding nested delegation.
+
+## 5. Understanding the Architecture
+
+A typical Deep Agents application can be organized into these components:
+
+- **Main Agent:** Understands the overall objective and coordinates execution.
+- **Sub-agents:** Handle specialized responsibilities.
+- **Skills:** Provide task-specific instructions.
+- **Tools:** Perform concrete operations.
+- **Filesystem Backend:** Stores intermediate and final outputs.
+- **Middleware:** Adds execution controls and additional behavior.
+
+These components work together to build agents capable of completing complex tasks.
+
+## 6. Practical Applications
+
+The concepts covered in this project can be applied to:
+
+- **AI Research Assistant:** Researches topics and generates structured reports.
+- **Multi-Agent Competitor Analysis:** Delegates research on different competitors and combines the findings.
+- **Automated Presentation Generator:** Uses research reports, presentation skills, and custom tools to generate PowerPoint slides.
+
+## Key Takeaways
+
+- Deep Agents provides a structured environment for building complex AI agents.
+- Planning helps organize multi-step tasks.
+- Skills make agent instructions reusable and modular.
+- Sub-agents enable task delegation and specialization.
+- Custom tools connect agent reasoning with real-world operations.
+- Filesystem backends help manage intermediate and final outputs.
+- Middleware and LangSmith improve control, observability, and debugging.
+
+**The main idea:** Deep Agents moves beyond simple question-answering and tool calling toward building structured, extensible agents that can plan, delegate, execute, and produce meaningful outputs.
