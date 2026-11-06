@@ -1,6 +1,4 @@
-# ==========================================
-# LANGCHAIN ECOSYSTEM
-# ==========================================
+
 
 langchain
 langchain-core
@@ -11,69 +9,19 @@ langgraph
 langgraph-checkpoint
 langgraph-checkpoint-sqlite
 langchain-mcp-adapters  
+deepagents 
+python-pptx
 
 # Install Node.js and playwright to use the MCP browser agent : winget install OpenJS.NodeJS.LTS
 
-# ==========================================
-# PYDANTIC & DATA VALIDATION
-# ==========================================
+
 
 pydantic
 typing-extensions
 
-# ==========================================
-# LLM PROVIDERS & API CLIENTS
-# ==========================================
-
-openai
-groq
-requests
-httpx
-
-# ==========================================
-# SEARCH TOOLS
-# ==========================================
-
-google-search-results
-
-# ==========================================
-# DATABASES & MEMORY
-# ==========================================
-
-aiosqlite
-sqlalchemy
-
-# ==========================================
-# RAG & VECTOR DATABASES
-# ==========================================
-
-chromadb
-faiss-cpu
-sentence-transformers
-
-# ==========================================
-# UI
-# ==========================================
-
 gradio
 streamlit
 
-# ==========================================
-# ENVIRONMENT & CONFIGURATION
-# ==========================================
 
 python-dotenv
 
-# ==========================================
-# DATA PROCESSING
-# ==========================================
-
-numpy
-pandas
-
-# ==========================================
-# UTILITIES
-# ==========================================
-
-tavily-python
-beautifulsoup4
